@@ -2,15 +2,22 @@ name: Keep Repository Alive
 
 on:
   schedule:
-    - cron: '0 0 */20 * *'  # 每20天提交一次，可按需调整
+    - cron: '0 0 */20 * *'  # 每20天提交一次
   workflow_dispatch:        # 允许手动运行
 
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write      # 需要写入权限才能推送
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # 保存凭证用于后续推送
+          fetch-depth: 0               # 获取完整历史
 
       - name: Update keep-alive timestamp
         run: |
